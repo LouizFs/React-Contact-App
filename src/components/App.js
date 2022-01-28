@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from  "react";
-import { uuid } from 'uuidv4';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
 import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
+import ContactDetail from "./ContactDetail";
+
 
 function App() {
   const LOCAL_STORAGE_KEY = "contacts"
@@ -11,8 +13,8 @@ function App() {
   const [contacts, setContacts] = useState([]); 
   const addContactHandler = (contact) => {
     if(contacts.length > 0)
-      count = contacts[contacts.length - 1].id + 1
-    setContacts([...contacts, {id: count, ...contact}])
+      count = contacts[contacts.length - 1].id + 1;
+    setContacts([...contacts, {id: count, ...contact}]);
   }
 
   const removeContactHandler = (id) => {
@@ -34,9 +36,15 @@ function App() {
 
   return ( 
     <div className="ui container">
-      <Header />
-      <AddContact addContactHandler={addContactHandler} />
-      <ContactList contacts={contacts} getContactId={removeContactHandler} />
+      <Router>
+        <Header style={{marginBottom: "30%"}} />
+        <br></br><br></br>
+        <Switch>
+          <Route path="/add" render={(props) => <AddContact {...props} addContactHandler={addContactHandler} /> } />
+          <Route path="/" exact render={(props) => (<ContactList {...props} contacts={contacts} getContactId={removeContactHandler} />)}  />
+          <Route path="/contact/:id" component={ContactDetail} />
+        </Switch>
+      </Router>
     </div>
   );
 }
